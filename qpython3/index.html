@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta name="viewport" id="viewport"
+      content="width=device-width, target-densitydpi=device-dpi,
+      initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+  
+    <style>
+      body { background-color: #EEE }
+      #banner { text-align: center }
+      #userin {
+        position: absolute;
+        right: 10px;
+        left: 10px;
+      }
+      #output {
+        font-family: monospace;
+        padding: 20px;
+        }
+      #upload{
+        font-size: 16px;
+        padding: 5px;
+        position: absolute; top: 10px;
+        left: 10px;
+      }
+      #quit{
+        font-size: 16px;
+        padding: 5px;
+        position: absolute; top: 10px;
+        right: 10px;
+      }
+      #stop{
+        font-size: 16px;
+        padding: 5px;
+        position: absolute; top: 70px;
+        right: 10px;
+      }
+      #insert{
+        font-size: 16px;
+        padding: 10px;
+        position: absolute; bottom: 10px;
+        left: 10px;
+      }
+      #get{
+        font-size: 16px;
+        padding: 10px;
+        position: absolute; bottom: 10px;
+        right: 10px;
+      }
+      dt, dd {
+		  display: inline-block;
+		  vertical-align: top;
+		  margin: 0 0 0.32em 0;
+		}
+		
+		dt {
+		  width: 25%;
+		  margin-right: 5%;
+		}
+		
+		dd { 
+		  width: 70%;
+		  color: #000;
+		}
+    </style>
+  
+    <script>
+      var droid = new Android();
+      var input="";
+      
+      function postInput() {
+        input=document.getElementById("userin").value;
+        droid.eventPost('line', input);
+        document.getElementById('output').innerHTML = "Saving...";
+        
+        droid.registerCallback('insert', function(e) {
+          document.getElementById('output').innerHTML = e.data;
+        });
+      }
+      function getLoc(){
+        droid.eventPost('get', document.getElementById("codeSrc").innerHTML);
+        document.getElementById('output').innerHTML = "Locating...";
+        droid.registerCallback('stdout', function(e) {
+          document.getElementById('output').innerHTML = "";
+          str=e.data;
+          str=str.slice(1,str.length-1)
+		  document.getElementById("latitude").innerHTML= str.slice(str.indexOf("latitude': '")+12,str.indexOf("',",str.indexOf("latitude': '")));
+		  document.getElementById("longitude").innerHTML= str.slice(str.indexOf("longitude': '")+13,str.indexOf("',",str.indexOf("longitude': '")));
+		  document.getElementById("accuracy").innerHTML= str.slice(str.indexOf("accuracy': '")+12,str.indexOf("',",str.indexOf("accuracy': '")));
+		  document.getElementById("altitude").innerHTML= str.slice(str.indexOf("altitude': '")+12,str.indexOf("',",str.indexOf("altitude': '")));
+		  document.getElementById("heading").innerHTML= str.slice(str.indexOf("heading': '")+11,str.indexOf("',",str.indexOf("heading': '")));
+		  document.getElementById("speed").innerHTML= str.slice(str.indexOf("speed': '")+9,str.indexOf("',",str.indexOf("speed': '")));
+		  document.getElementById("time").innerHTML= str.slice(str.indexOf("readTime': '")+12,str.indexOf("',",str.indexOf("readTime': '")));
+		  document.getElementById("geocode").innerHTML= str.slice(str.indexOf("geoCode': '")+11,str.indexOf("',",str.indexOf("geoCode': '")));
+        });
+      }
+      
+      function changeCodeSrc(){
+	  switch(document.getElementById("codeSrc").innerHTML){
+	  case "noCode":
+	  document.getElementById("codeSrc").innerHTML="ggCode";
+	  break;
+	  case "ggCode":
+	  document.getElementById("codeSrc").innerHTML="noCode";
+	  break;
+		  }
+	   }
+    </script>
+  
+  </head>
+ 
+  <body>
+    <div id="banner">
+      <h2 id="output">LOC</h2>
+    </div>
+    <dl>
+	<dt>Latitude</dt><dd id="latitude"></dd>
+	<dt>Longitude</dt><dd id="longitude"></dd>
+	<dt>Accuracy</dt><dd id="accuracy"></dd>
+	<dt>Altitude</dt><dd id="altitude"></dd>
+	<dt>Heading</dt><dd id="heading"></dd>
+	<dt>Speed</dt><dd id="speed"></dd>
+	<dt>Time</dt><dd id="time"></dd>
+	<dt id="codeSrc" onclick="changeCodeSrc();">noCode</dt><dd id="geocode"></dd>
+	</dl>
+	
+    <textarea rows="4" cols="20" id="userin" name="userin"></textarea>   
+
+    <button id="upload" type="button" onclick="droid.eventPost('upload', '');">Upload</button>
+    <button id="insert" type="button" onclick="postInput();">Insert</button>
+    <button id="get" type="button" onclick="getLoc();">Get</button>
+    <button id="stop" type="button" onclick="droid.stopLocating();">Stop</button>
+    <button id="quit" type="button" onclick="droid.eventPost('kill', '');droid.dismiss();">Quit</button>
+  </body>
+</html>
