@@ -77,18 +77,18 @@ def checkAc(c=0):
       ac=a['ac']
       ps=a['ps']
     else:
-      line = droid.dialogGetInput('请输入帐号信息:','您的帐号是:')
+      line = droid.dialogGetInput('Account Info','Please input your account:')
       ac=str(line.result)
       droid.prefPutValue("ac",ac,"z")
-      line1 = droid.dialogGetInput('请输入帐号信息:','您的密码是:')
+      line1 = droid.dialogGetInput('Account Info','Please input your password:')
       ps=str(line1.result)
       droid.prefPutValue("ps",ps,"z")
       droid.makeToast('Account '+ac+' saved')
   elif c==1:
-      line = droid.dialogGetInput('请输入帐号信息:','您的帐号是:')
+      line = droid.dialogGetInput('Account Info','Please input your account:')
       ac=str(line.result)
       droid.prefPutValue("ac",ac,"z")
-      line1 = droid.dialogGetInput('请输入帐号信息:','您的密码是:')
+      line1 = droid.dialogGetInput('Account Info','Please input your password:')
       ps=str(line1.result)
       droid.prefPutValue("ps",ps,"z")
       droid.makeToast('Account '+ac+' saved')
@@ -123,7 +123,7 @@ def writeLocation(geoData):
     doLogin()
     return doPost("""$_SESSION["user_id"]""",geoData['latitude'],geoData['longitude'],geoData['accuracy'],geoData['altitude'],'0',geoData['heading'],geoData['speed'],geoData['timestamp'],geoData['readTime'],geoData['text'],geoData['geoCode'])
   else:
-    droid.makeToast("尝试本地储存")
+    droid.makeToast("Try to save data to local")
     conn = sqlite3.connect('/storage/sdcard0/home/test.db')
     c = conn.cursor()
     c.execute("""create table if not exists LocalLoc (ID integer primary key not NULL,latitude double,longitude double,accuracy integer,altitude double,heading double,speed double,locTimestamp integer(13),locTime CHAR(20),textMsg TEXT,geoCode TEXT)""")
@@ -140,7 +140,7 @@ def getgeocode():
   try:
     result=droid.geocode( geoData['latitude'], geoData['longitude'], 1).result
   except java.io.IOException:
-    print('geo code network failed：java.io.IOException,未获取到位置')
+    print('geo code network failed：java.io.IOException')
   if result==None:
     s=""
   else:
