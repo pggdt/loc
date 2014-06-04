@@ -10,7 +10,7 @@
 <head>
 <meta charset="UTF-8" />
 
-<title>html5地理位置</title>
+<title>html5-Location</title>
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <script stype="text/javascript" src="js/loc.js"></script>
 <script
@@ -34,9 +34,9 @@ src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDfYwZAVajNuT6_mcTYwY6_Jxds
 	</dl>
 <div id="load" style="visibility:hidden"></div>	
 <p id="location"></p>
-<input type="button" value="写入数据库" onclick="send()">
+<input type="button" value="Save" onclick="send()">
 &nbsp;&nbsp;&nbsp;&nbsp;
-<input type="button" value="获取当前位置" onclick="getLocation(showPosition)"><br />
+<input type="button" value="Get" onclick="getLocation(showPosition)"><br />
 Text:<br /><textarea rows="10" cols="30" id="text" name="text"></textarea><br />
 	
 <a href="loc-outi.php" target="_blank">Records</a>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -51,7 +51,7 @@ Text:<br /><textarea rows="10" cols="30" id="text" name="text"></textarea><br />
 	var day = d.getDate();
 	var month = d.getMonth() + 1;
 	var year = d.getFullYear();
-	return year + "年" + month +"月"+ day +"日 "+ d.toLocaleTimeString();
+	return year + "-" + month +"-"+ day +" "+ d.toLocaleTimeString();
 	};
 	function getLocation(func1)
 	  {
