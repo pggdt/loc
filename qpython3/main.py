@@ -123,15 +123,19 @@ def writeLocation(geoData):
     doLogin()
     return doPost("""$_SESSION["user_id"]""",geoData['latitude'],geoData['longitude'],geoData['accuracy'],geoData['altitude'],'0',geoData['heading'],geoData['speed'],geoData['timestamp'],geoData['readTime'],geoData['text'],geoData['geoCode'])
   else:
-    droid.makeToast("Try to save data to local")
-    conn = sqlite3.connect('/storage/sdcard0/home/test.db')
-    c = conn.cursor()
-    c.execute("""create table if not exists LocalLoc (ID integer primary key not NULL,latitude double,longitude double,accuracy integer,altitude double,heading double,speed double,locTimestamp integer(13),locTime CHAR(20),textMsg TEXT,geoCode TEXT)""")
-    s="""insert into LocalLoc (ID,latitude,longitude,accuracy,altitude,heading,speed,locTimestamp,locTime,textMsg,geoCode) VALUES (NULL,"""+geoData['latitude']+','+geoData['longitude']+','+geoData['accuracy']+','+geoData['altitude']+','+geoData['heading']+','+geoData['speed']+',\''+geoData['timestamp']+'\',\''+geoData['readTime']+'\',\''+geoData['text']+'\',\''+geoData['geoCode']+'\')'
-    c.execute(s)
-    conn.commit()
-    c.close
-    return "Record at "+geoData['readTime']+" saved to local."
+    saveToLocal()
+
+def saveToLocal():
+  global geoData
+  droid.makeToast("Try to save data to local")
+  conn = sqlite3.connect('/storage/sdcard0/home/test.db')
+  c = conn.cursor()
+  c.execute("""create table if not exists LocalLoc (ID integer primary key not NULL,latitude double,longitude double,accuracy integer,altitude double,heading double,speed double,locTimestamp integer(13),locTime CHAR(20),textMsg TEXT,geoCode TEXT)""")
+  s="""insert into LocalLoc (ID,latitude,longitude,accuracy,altitude,heading,speed,locTimestamp,locTime,textMsg,geoCode) VALUES (NULL,"""+geoData['latitude']+','+geoData['longitude']+','+geoData['accuracy']+','+geoData['altitude']+','+geoData['heading']+','+geoData['speed']+',\''+geoData['timestamp']+'\',\''+geoData['readTime']+'\',\''+geoData['text']+'\',\''+geoData['geoCode']+'\')'
+  c.execute(s)
+  conn.commit()
+  c.close
+  return "Record at "+geoData['readTime']+" saved to local."
 
 def getgeocode():
   global geoData
@@ -190,6 +194,8 @@ while True:
   elif event ['name' ] == 'get' :
     droid.startLocating(7000)
     getGeoInfo(event [ 'data' ])
+  elif event ['name' ] == 'saveLocal' :
+    saveToLocal()
   elif event ['name' ] == 'line' :
     droid.eventPost('insert', saveGeoInfo(event [ 'data' ]))
   elif event ['name' ] == 'upload' :
