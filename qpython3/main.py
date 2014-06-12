@@ -59,14 +59,19 @@ def setGeoData(location,code):
 def doPost(userId,latitude,longitude,accuracy,altitude,altitudeAccuracy,heading,speed,locTimestamp,locTime,textNote='',geoCode=''):  
   data = urllib.parse.urlencode({'user_id':userId,'latitude': latitude ,'longitude':longitude,'accuracy':accuracy,'altitude':altitude,'altitudeAccuracy':altitudeAccuracy,'heading':heading,'speed':speed,'timestamp':locTimestamp,'time':locTime,'text':textNote,'geoCode':geoCode})
   data=data.encode('utf-8')
-  request = urllib.request.Request('http://test.wupo.info/loc/loc-in.php',data)  
-  response = urllib.request.urlopen(request)  
-  r = response.read().decode('utf-8')
-  if response.code != 200:
-    print("Error code:"+response.code)  
+  request = urllib.request.Request('http://test.wupo.info/loc/loc-in.php',data)
+  try:
+    response = urllib.request.urlopen(request)
+  except urllib.error.HTTPError as e:
+    print(e)
+    saveToLocal()
   else:
-    print(r)
-    return r
+    r = response.read().decode('utf-8')
+    if response.code != 200:
+      print("Error code:"+response.code)  
+    else:
+      print(r)
+      return r
 
 def checkAc(c=0):
   global ac
@@ -103,14 +108,21 @@ def doLogin():
   opener = urllib.request.build_opener(cookie_support, urllib.request.HTTPHandler)
   urllib.request.install_opener(opener)
   req=urllib.request.Request(url = url,data = data)
-  response=urllib.request.urlopen(req)
-  cookies=response.headers["Set-cookie"]
-  cookie=cookies[cookies.index("PHPSESSID="):]
-  #print(cookies)
-  #session = cookie[10:cookie.index(";")+1] 
-  rt= response.read().decode('utf-8')
-  droid.makeToast(rt)
-  return rt
+  rt=''
+  try:
+    response=urllib.request.urlopen(req)
+  except urllib.error.HTTPError as e:
+    print(e)
+    return rt
+    saveToLocal()
+  else:
+    cookies=response.headers["Set-cookie"]
+    cookie=cookies[cookies.index("PHPSESSID="):]
+    #print(cookies)
+    #session = cookie[10:cookie.index(";")+1] 
+    rt= response.read().decode('utf-8')
+    droid.makeToast(rt)
+    return rt
 
 def writeLocation(geoData):
   #global geoData
@@ -119,8 +131,7 @@ def writeLocation(geoData):
     s1=socket.gethostbyname('test.wupo.info')
   except socket.gaierror:
     pass
-  if s1.count('.')==3:
-    doLogin()
+  if (s1.count('.')==3) and (doLogin().startswith('登')):
     return doPost("""$_SESSION["user_id"]""",geoData['latitude'],geoData['longitude'],geoData['accuracy'],geoData['altitude'],'0',geoData['heading'],geoData['speed'],geoData['timestamp'],geoData['readTime'],geoData['text'],geoData['geoCode'])
   else:
     saveToLocal()
