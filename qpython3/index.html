@@ -30,13 +30,6 @@
         position: absolute; top: 10px;
         right: 10px;
       }
-      #insertLocal{
-        font-size: 16px;
-        padding: 5px;
-        position: absolute; top: 70px;
-        left: 10px;
-        display:none;
-      }
       #stop{
         font-size: 16px;
         padding: 5px;
@@ -81,24 +74,16 @@
     <script>
       var droid = new Android();
       var input="";
+      droid.registerCallback('insert', function(e) {
+          document.getElementById('output').innerHTML = e.data;
+        });
       
       function postInput() {
         input=document.getElementById("userin").value;
         droid.eventPost('line', input);
         document.getElementById('output').innerHTML = "Saving...";
-        document.getElementById("insertLocal").style.display="block";
         
-        droid.registerCallback('insert', function(e) {
-          document.getElementById('output').innerHTML = e.data;
-          document.getElementById("insertLocal").style.display="none";
-        });
-      }
-      function insertLocal() {
-        input=document.getElementById("userin").value;
-        droid.eventPost('saveLocal', input);
-        document.getElementById('output').innerHTML = "Saving to local...";
         
-
       }
       function getLoc(){
         droid.eventPost('get', document.getElementById("codeSrc").innerHTML);
@@ -150,7 +135,6 @@
     <textarea rows="4" cols="20" id="userin" name="userin"></textarea>   
 
     <button id="upload" type="button" onclick="droid.eventPost('upload', '');">Upload</button>
-    <button id="insertLocal" type="button" onclick="insertLocal();">Save to SD</button>
     <button id="quit" type="button" onclick="droid.eventPost('kill', '');droid.dismiss();">Quit</button>
     <button id="stop" type="button" onclick="droid.stopLocating();">Stop</button>
     <button id="results" type="button" onclick="droid.webViewShow ('file:///storage/sdcard0/com.hipipal.qpyplus/projects3/loc/results.html');">Results</button>
