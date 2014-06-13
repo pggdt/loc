@@ -1,4 +1,4 @@
-from android import Android
+﻿from android import Android
 import sys,time,socket,urllib,http.cookiejar,sqlite3
 droid = Android()
 geoData={}
