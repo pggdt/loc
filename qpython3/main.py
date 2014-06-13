@@ -62,9 +62,15 @@ def doPost(userId,latitude,longitude,accuracy,altitude,altitudeAccuracy,heading,
   request = urllib.request.Request('http://test.wupo.info/loc/loc-in.php',data)
   try:
     response = urllib.request.urlopen(request)
+<<<<<<< HEAD
   except (urllib.error.HTTPError, socket.error) as e:
     print('Connection error occurred when inserting data.')
     return saveToLocal()
+=======
+  except urllib.error.HTTPError as e:
+    print(e)
+    saveToLocal()
+>>>>>>> 386d0777fa4a1695a7080729275f2adf07166eb2
   else:
     r = response.read().decode('utf-8')
     if response.code != 200:
@@ -111,9 +117,16 @@ def doLogin():
   rt=''
   try:
     response=urllib.request.urlopen(req)
+<<<<<<< HEAD
   except (urllib.error.HTTPError, socket.error, socket.gaierror,urllib.error.URLError) as e:
     print('Connection error, couldn\'t login in.')
     return rt
+=======
+  except urllib.error.HTTPError as e:
+    print(e)
+    return rt
+    saveToLocal()
+>>>>>>> 386d0777fa4a1695a7080729275f2adf07166eb2
   else:
     cookies=response.headers["Set-cookie"]
     cookie=cookies[cookies.index("PHPSESSID="):]
@@ -124,7 +137,17 @@ def doLogin():
     return rt
 
 def writeLocation(geoData):
+<<<<<<< HEAD
   if (doLogin().startswith('登')):
+=======
+  #global geoData
+  s1=''
+  try:
+    s1=socket.gethostbyname('test.wupo.info')
+  except socket.gaierror:
+    pass
+  if (s1.count('.')==3) and (doLogin().startswith('登')):
+>>>>>>> 386d0777fa4a1695a7080729275f2adf07166eb2
     return doPost("""$_SESSION["user_id"]""",geoData['latitude'],geoData['longitude'],geoData['accuracy'],geoData['altitude'],'0',geoData['heading'],geoData['speed'],geoData['timestamp'],geoData['readTime'],geoData['text'],geoData['geoCode'])
   else:
     return saveToLocal()
