@@ -1,4 +1,4 @@
-﻿from android import Android
+from android import Android
 import sys,time,socket,urllib,http.cookiejar,sqlite3
 droid = Android()
 geoData={}
@@ -10,7 +10,7 @@ def upload():
   conn = sqlite3.connect('/storage/sdcard0/home/test.db')
   c = conn.cursor()
   c.execute ("""select * from LocalLoc""")
-  while True:
+  while 1:
     r=c.fetchone()
     droid.eventPost('insert',str(len(del_ID))+'fetched')
     if r!=None:
@@ -65,9 +65,6 @@ def doPost(userId,latitude,longitude,accuracy,altitude,altitudeAccuracy,heading,
   except (urllib.error.HTTPError, socket.error) as e:
     print('Connection error occurred when inserting data.')
     return saveToLocal()
-  except urllib.error.HTTPError as e:
-    print(e)
-    saveToLocal()
   else:
     r = response.read().decode('utf-8')
     if response.code != 200:
@@ -117,10 +114,6 @@ def doLogin():
   except (urllib.error.HTTPError, socket.error, socket.gaierror,urllib.error.URLError) as e:
     print('Connection error, couldn\'t login in.')
     return rt
-  except urllib.error.HTTPError as e:
-    print(e)
-    return rt
-    saveToLocal()
   else:
     cookies=response.headers["Set-cookie"]
     cookie=cookies[cookies.index("PHPSESSID="):]
@@ -132,12 +125,6 @@ def doLogin():
 
 def writeLocation(geoData):
   if (doLogin().startswith('登')):
-  s1=''
-  try:
-    s1=socket.gethostbyname('test.wupo.info')
-  except socket.gaierror:
-    pass
-  if (s1.count('.')==3) and (doLogin().startswith('登')):
     return doPost("""$_SESSION["user_id"]""",geoData['latitude'],geoData['longitude'],geoData['accuracy'],geoData['altitude'],'0',geoData['heading'],geoData['speed'],geoData['timestamp'],geoData['readTime'],geoData['text'],geoData['geoCode'])
   else:
     return saveToLocal()
