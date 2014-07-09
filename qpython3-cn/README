@@ -1,0 +1,4 @@
+CN version:
+1, Auto correct gps date when getting geocode from google. With the correct gps data, you'll get the correct geocode in china.
+2, Add zdCode for getting geocode(It has offset, and lack of accurency).
+3, Add bootstrap to index.html and looks not so ugly now.
