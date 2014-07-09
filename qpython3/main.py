@@ -62,7 +62,7 @@ def doPost(userId,latitude,longitude,accuracy,altitude,altitudeAccuracy,heading,
   request = urllib.request.Request('http://test.wupo.info/loc/loc-in.php',data)
   try:
     response = urllib.request.urlopen(request)
-  except (urllib.error.HTTPError, socket.error) as e:
+  except (urllib.error.HTTPError, socket.error,urllib.error.URLError) as e:
     print('Connection error occurred when inserting data.')
     return saveToLocal()
   else:
