@@ -2,7 +2,7 @@
 from android import Android
 import sys,time,socket,urllib,http.cookiejar,sqlite3
 droid = Android()
-geoData={}
+geoData={ 'latitude':None,'longitude':None,'accuracy':None,'altitude':None,'heading':None,'speed':None,'timestamp':None,'readTime':None,'text':None,'geoCode':None}
 r1={}
 ac=''
 ps=''
@@ -75,7 +75,7 @@ def doPost(userId,latitude,longitude,accuracy,altitude,altitudeAccuracy,heading,
       print(r)
       return r
 
-def checkAc(c=0):#check or save account info
+def checkAc(c=0):
   global ac
   global ps
   if c==0:
@@ -121,7 +121,6 @@ def doLogin():
     cookie=cookies[cookies.index("PHPSESSID="):]
     #print(cookies)
     #session = cookie[10:cookie.index(";")+1] 
-    #I have no time to deal with the cookie, so it does a login in everytime when save date to server.
     rt= response.read().decode('utf-8')
     droid.makeToast(rt)
     return rt
@@ -135,7 +134,7 @@ def writeLocation(geoData):
 def saveToLocal():
   global geoData
   droid.makeToast("Try to save data to local")
-  conn = sqlite3.connect('/storage/sdcard0/home/test.db')#data will be save here if login in failed. you can upload the data to server later.
+  conn = sqlite3.connect('/storage/sdcard0/home/test.db')
   c = conn.cursor()
   c.execute("""create table if not exists LocalLoc (ID integer primary key not NULL,latitude double,longitude double,accuracy integer,altitude double,heading double,speed double,locTimestamp integer(13),locTime CHAR(20),textMsg TEXT,geoCode TEXT)""")
   s="""insert into LocalLoc (ID,latitude,longitude,accuracy,altitude,heading,speed,locTimestamp,locTime,textMsg,geoCode) VALUES (NULL,"""+geoData['latitude']+','+geoData['longitude']+','+geoData['accuracy']+','+geoData['altitude']+','+geoData['heading']+','+geoData['speed']+',\''+geoData['timestamp']+'\',\''+geoData['readTime']+'\',\''+geoData['text']+'\',\''+geoData['geoCode']+'\')'
@@ -149,7 +148,7 @@ def getgeocode(code):
   global r1
   droid.makeToast('Getting geocode...')
   s=''
-  if code=="ggCode":#use google's geocode service, since it's banned in china, you may need a vpn connection
+  if code=="ggCode":
     data2 = urllib.parse.urlencode({'lat':geoData['latitude'],'lng':geoData['longitude']})
     try:
       response = urllib.request.urlopen('http://api.zdoz.net/transgps.aspx?'+data2)
@@ -172,7 +171,7 @@ def getgeocode(code):
         s=s+","+str(result[k])
       s=s[1:]
     return s
-  elif code=="zdCode":#zdoz's geocode is not very good
+  elif code=="zdCode":
     data3=urllib.parse.urlencode({'lat':geoData['latitude'],'lng':geoData['longitude']})
     try:
       response1 = urllib.request.urlopen('http://api.zdoz.net/geo2loc.aspx?'+data3)
@@ -210,7 +209,7 @@ def saveGeoInfo(massage):
   geoData['text']=massage
   return writeLocation(geoData)  
 
-droid.webViewShow ('file:///storage/sdcard0/com.hipipal.qpyplus/projects3/loc_cn/index.html')#You may change the file's location
+droid.webViewShow ('file:///storage/sdcard0/com.hipipal.qpyplus/projects3/loc_cn/index.html')
 while True:
   event = droid.eventWait().result
   if event ['name' ] == 'kill' :
@@ -224,7 +223,7 @@ while True:
     droid.eventPost('insert', saveGeoInfo(event [ 'data' ]))
   elif event ['name' ] == 'upload' :
     lo=doLogin()
-    if (lo.startswith('登')):#once login succeed, the php will echo "登录成功……"
+    if (lo.startswith('登')):
       upload()
     else:
       droid.eventPost('insert',"Login in failed.")

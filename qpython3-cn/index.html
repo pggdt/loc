@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html>
   <head>  
     <meta charset="utf-8">
@@ -46,6 +46,11 @@
         position: absolute; bottom: 10px;
         left: 10px;
       }
+     #director{
+        position: absolute; top: 200px;
+        right: 30px;
+        font-size: 2.5em;
+     }
       #get{
         font-size: 16px;
         padding: 10px;
@@ -88,14 +93,16 @@
         document.getElementById('output').innerHTML = "Locating...";
         droid.registerCallback('stdout', function(e) {
           document.getElementById('output').innerHTML = "";
+          var deg;
           str=e.data;
           str=str.slice(1,str.length-1)
 		  document.getElementById("latitude").innerHTML= str.slice(str.indexOf("latitude': '")+12,str.indexOf("',",str.indexOf("latitude': '")));
 		  document.getElementById("longitude").innerHTML= str.slice(str.indexOf("longitude': '")+13,str.indexOf("',",str.indexOf("longitude': '")));
 		  document.getElementById("accuracy").innerHTML= str.slice(str.indexOf("accuracy': '")+12,str.indexOf("',",str.indexOf("accuracy': '")));
 		  document.getElementById("altitude").innerHTML= str.slice(str.indexOf("altitude': '")+12,str.indexOf("',",str.indexOf("altitude': '")));
-		  document.getElementById("heading").innerHTML= str.slice(str.indexOf("heading': '")+11,str.indexOf("',",str.indexOf("heading': '")));
-		  document.getElementById("speed").innerHTML= str.slice(str.indexOf("speed': '")+9,str.indexOf("',",str.indexOf("speed': '")));
+          deg=str.slice(str.indexOf("heading': '")+11,str.indexOf("',",str.indexOf("heading': '")));
+		  document.getElementById("heading").innerHTML= deg;
+		 $("#director").css("-webkit-transform","rotate("+deg+"deg)"); document.getElementById("speed").innerHTML= str.slice(str.indexOf("speed': '")+9,str.indexOf("',",str.indexOf("speed': '")));
 		  document.getElementById("time").innerHTML= str.slice(str.indexOf("readTime': '")+12,str.indexOf("',",str.indexOf("readTime': '")));
 		  document.getElementById("geocode").innerHTML= str.slice(str.indexOf("geoCode': '")+11,str.indexOf("',",str.indexOf("geoCode': '")));
         });
@@ -134,6 +141,8 @@
 	<dt id="codeSrc" onclick="changeCodeSrc();">noCode</dt><dd id="geocode"></dd>
 	</dl>
 	
+
+    <div id="director"><span>↑</span></div>
     <textarea class="form-control" rows="4" id="userin" name="userin"></textarea>   
 
     <button id="upload" type="button" class="btn btn-sm btn-success" onclick="droid.eventPost('upload', '');">Upload</button>
