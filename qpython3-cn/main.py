@@ -148,7 +148,7 @@ def getgeocode(code):
   global r1
   droid.makeToast('Getting geocode...')
   s=''
-  if code=="ggCode":
+  if code=="ggCodeCN":
     data2 = urllib.parse.urlencode({'lat':geoData['latitude'],'lng':geoData['longitude']})
     try:
       response = urllib.request.urlopen('http://api.zdoz.net/transgps.aspx?'+data2)
@@ -159,6 +159,21 @@ def getgeocode(code):
       r1=eval(r)
     try:
       result=droid.geocode( r1['Lat'], r1['Lng'], 1).result
+    except java.io.IOException:
+      print('geo code network failed：java.io.IOException')
+    if result==None:
+      s=""
+    else:
+      result=result[0]
+      if ('thoroughfare' in result.keys()) and ('feature_name' in result.keys()) and (result['thoroughfare']==result['feature_name']):
+        del result['feature_name']
+      for k in result:
+        s=s+","+str(result[k])
+      s=s[1:]
+    return s
+  elif code=="ggCode":
+    try:
+      result=droid.geocode( geoData['latitude'], geoData['longitude'], 1).result
     except java.io.IOException:
       print('geo code network failed：java.io.IOException')
     if result==None:

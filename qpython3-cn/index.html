@@ -8,7 +8,6 @@
       initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <link href="file:///storage/sdcard0/com.hipipal.qpyplus/projects3/loc_cn/css/bootstrap.min.css" rel="stylesheet">
-  
     <style>
       body { background-color: #DEF }
       .page-header {
@@ -51,6 +50,10 @@
         right: 30px;
         font-size: 2.5em;
      }
+     #inCNDiv{
+        position: absolute; top: 260px;
+        right: 25px;
+     }
       #get{
         font-size: 16px;
         padding: 10px;
@@ -73,7 +76,7 @@
 		  color: #000;
 		}
     </style>
-  
+    
     <script>
       var droid = new Android();
       var input="";
@@ -108,11 +111,16 @@
         });
       }
       
-      function changeCodeSrc(){
+    function changeCodeSrc(){
 	  switch(document.getElementById("codeSrc").innerHTML){
 	  case "noCode":
-	  document.getElementById("codeSrc").innerHTML="ggCode";
+	    if (document.getElementById("inCN").checked){
+	    document.getElementById("codeSrc").innerHTML="ggCodeCN";
+	    } else {
+	    document.getElementById("codeSrc").innerHTML="ggCode";
+	    }
 	  break;
+	  case "ggCodeCN":
 	  case "ggCode":
 	  document.getElementById("codeSrc").innerHTML="zdCode";
 	  break;
@@ -121,6 +129,10 @@
 	  break;
 		  }
 	   }
+
+    function saveInCN(){
+    //html5的localStorage不受webview支持，用cookie也因为localhost的问题无法保存
+    }
     </script>
   
   </head>
@@ -143,6 +155,9 @@
 	
 
     <div id="director"><span>↑</span></div>
+    <div id="inCNDiv">
+      <input type="checkbox" name="inCN" id="inCN" value="inCN" checked="ture">Mars
+    </div>
     <textarea class="form-control" rows="4" id="userin" name="userin"></textarea>   
 
     <button id="upload" type="button" class="btn btn-sm btn-success" onclick="droid.eventPost('upload', '');">Upload</button>
@@ -151,8 +166,11 @@
     <button id="results" type="button" class="btn btn-sm btn-success" onclick="droid.webViewShow ('file:///storage/sdcard0/com.hipipal.qpyplus/projects3/loc_cn/results.html');">Results</button>
     <button id="insert" type="button" class="btn btn-sm btn-success" onclick="postInput();">Save</button>
     <button id="get" type="button" class="btn btn-sm btn-success" onclick="getLoc();">Get</button>
+    </div>
     <script src="file:///storage/sdcard0/com.hipipal.qpyplus/projects3/loc_cn/js/jquery.min.js"></script>
     <script src="file:///storage/sdcard0/com.hipipal.qpyplus/projects3/loc_cn/js/bootstrap.min.js"></script>
-    </div>
+    <script>
+      checkCookie();
+    </script>
   </body>
 </html>
