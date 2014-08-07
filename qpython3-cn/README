@@ -2,3 +2,4 @@ CN version:
 1, Auto correct gps date when getting geocode from google. With the correct gps data, you'll get the correct geocode in china.
 2, Add zdCode for getting geocode(It has offset, and lack of accurency).
 3, Add bootstrap to index.html and looks not so ugly now.
+4, Add selection for user in china or out of china. I tried to save the selection by html5's local storage feature but it didn't work. Then I tried cookie with javascript, it faild again duo to localhost issue.
