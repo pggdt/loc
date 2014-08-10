@@ -11,54 +11,64 @@
     <style>
       body { background-color: #DEF }
       .page-header {
-        margin: 10px 18% 0 22%;
-        padding-bottom: 0px;
-        border-bottom: none;
+        width:50%;
+        position:absolute;
+        top:-30px;left:25%;
+        z-index:5;
         }
       #upload{
         font-size: 16px;
         padding: 5px;
-        position: absolute; top: 10px;
-        left: 10px;
+        position: absolute; 
+        top: 10px;left: 10px;
       }
       #quit{
         font-size: 16px;
         padding: 5px;
-        position: absolute; top: 10px;
-        right: 10px;
+        position: absolute; 
+        top: 10px;right: 10px;
       }
+     #locInfo{
+       position:absolute;
+       top:70px;left:5%;
+     }
+     #text{
+        position: absolute; 
+        top: 296px;right: 5%;
+        width:90%;
+     }
       #stop{
         font-size: 16px;
         padding: 5px;
-        position: absolute; top: 70px;
-        right: 10px;
+        position: absolute; 
+        top: 70px;right: 10px;
       }
       #results{
         font-size: 16px;
         padding: 5px;
-        position: absolute; top: 130px;
-        right: 10px;
+        position: absolute; 
+        top: 130px;right: 10px;
       }
       #insert{
         font-size: 16px;
         padding: 10px;
-        position: absolute; bottom: 10px;
-        left: 10px;
+        position: absolute; 
+        top: 400px;left: 10px;
       }
      #director{
-        position: absolute; top: 200px;
-        right: 30px;
+        position: absolute;
+        top: 200px;right: 30px;
         font-size: 2.5em;
      }
      #inCNDiv{
-        position: absolute; top: 260px;
-        right: 25px;
+        position: absolute; 
+        top: 260px;right: 25px;
      }
       #get{
         font-size: 16px;
         padding: 10px;
-        position: absolute; bottom: 10px;
-        right: 10px;
+        position: absolute;
+        top: 400px;right: 10px;
       }
       dt, dd {
 		  display: inline-block;
@@ -131,7 +141,7 @@
 	   }
 
     function saveInCN(){
-    //html5的localStorage不受webview支持，用cookie也因为localhost的问题无法保存
+    //webview seems doesn't support localStorage in html5, cookies not perform well in localhost
     }
     </script>
   
@@ -142,6 +152,7 @@
     <div class="page-header">
       <div class="alert alert-info" role="alert" id="output">LOC</div>
     </div>
+    <div id="locInfo">
     <dl>
 	<dt>Latitude</dt><dd id="latitude"></dd>
 	<dt>Longitude</dt><dd id="longitude"></dd>
@@ -151,15 +162,17 @@
 	<dt>Speed</dt><dd id="speed"></dd>
 	<dt>Time</dt><dd id="time"></dd>
 	<dt id="codeSrc" onclick="changeCodeSrc();">noCode</dt><dd id="geocode"></dd>
-	</dl>
-	
+ 	</dl>
+
+	</div>
 
     <div id="director"><span>↑</span></div>
     <div id="inCNDiv">
       <input type="checkbox" name="inCN" id="inCN" value="inCN" checked="ture">Mars
-    </div>
+    </div>   
+    <div id="text">
     <textarea class="form-control" rows="4" id="userin" name="userin"></textarea>   
-
+    </div>
     <button id="upload" type="button" class="btn btn-sm btn-success" onclick="droid.eventPost('upload', '');">Upload</button>
     <button id="quit" type="button" class="btn btn-sm btn-success" onclick="droid.eventPost('kill', '');droid.dismiss();">Quit</button>
     <button id="stop" type="button" class="btn btn-sm btn-success" onclick="droid.stopLocating();">Stop</button>

@@ -2,7 +2,7 @@
 from android import Android
 import sys,time,socket,urllib,http.cookiejar,sqlite3
 droid = Android()
-geoData={ 'latitude':None,'longitude':None,'accuracy':None,'altitude':None,'heading':None,'speed':None,'timestamp':None,'readTime':None,'text':None,'geoCode':None}
+geoData={ 'latitude':'0','longitude':'0','accuracy':'0','altitude':'0','heading':'0','speed':'0','timestamp':'0','readTime':'0','text':'','geoCode':''}
 r1={}
 ac=''
 ps=''
@@ -17,7 +17,6 @@ def upload():
     droid.eventPost('insert',str(len(del_ID))+'fetched')
     if r!=None:
       rs=doPost("""$_SESSION["user_id"]""",r[1],r[2],r[3],r[4],'0',r[5],r[6],r[7],r[8],r[9],r[10])
-      print(rs)
       rs1='Record at '+r[8]+' added.'
       if len(rs)==len(rs1)+1:
         del_ID.append(r[0])
@@ -222,6 +221,12 @@ def getGeoInfo(code):
 def saveGeoInfo(massage):
   global geoData
   geoData['text']=massage
+  if(geoData['latitude']=='0'):
+    geoData['time']=time.time()*1000
+    timeS= time.localtime(geoData['time']/1000)
+    myreadTime = time.strftime("%Y-%m-%d %H:%M:%S",timeS)
+    geoData['readTime']=myreadTime
+    geoData['timestamp']=str(geoData['time'])
   return writeLocation(geoData)  
 
 droid.webViewShow ('file:///storage/sdcard0/com.hipipal.qpyplus/projects3/loc_cn/index.html')
