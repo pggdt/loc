@@ -102,20 +102,24 @@ def checkAc(c=0):
 def doLogin():
   checkAc(0)
   url="http://test.wupo.info/login/login_go.php"
-  data=urllib.parse.urlencode({'UserName':ac,'Password':ps,'KeepInfo':'unchecked'})
+  data=urllib.parse.urlencode({'UserName':ac,'Password':ps})
   data=data.encode('utf-8')
-  cj=http.cookiejar.CookieJar()
+  cj=http.cookiejar.LWPCookieJar()
   cookie_support = urllib.request.HTTPCookieProcessor(cj)
-  opener = urllib.request.build_opener(cookie_support)
+  opener = urllib.request.build_opener(cookie_support, urllib.request.HTTPHandler)
   urllib.request.install_opener(opener)
   req=urllib.request.Request(url = url,data = data)
   rt=''
   try:
-    response=opener.open(req)
+    response=urllib.request.urlopen(req)
   except (urllib.error.HTTPError, socket.error, socket.gaierror,urllib.error.URLError) as e:
     print('Connection error, couldn\'t login in.')
     return rt
   else:
+    cookies=response.headers["Set-cookie"]
+    cookie=cookies[cookies.index("PHPSESSID="):]
+    #print(cookies)
+    #session = cookie[10:cookie.index(";")+1] 
     rt= response.read().decode('utf-8')
     droid.makeToast(rt)
     return rt
