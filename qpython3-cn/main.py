@@ -6,10 +6,11 @@ geoData={ 'latitude':'0','longitude':'0','accuracy':'0','altitude':'0','heading'
 r1={}
 ac=''
 ps=''
+locBaseUrl='http://test.wupo.info/'
 
 def upload():
   del_ID=[]
-  conn = sqlite3.connect('/storage/sdcard0/home/test.db')
+  conn = sqlite3.connect('file:///storage/sdcard0/com.hipipal.qpyplus/projects3/qpython3-cn/test.db')
   c = conn.cursor()
   c.execute ("""select * from LocalLoc""")
   while 1:
@@ -60,7 +61,7 @@ def setGeoData(location,code):
 def doPost(userId,latitude,longitude,accuracy,altitude,altitudeAccuracy,heading,speed,locTimestamp,locTime,textNote='',geoCode=''):  
   data = urllib.parse.urlencode({'user_id':userId,'latitude': latitude ,'longitude':longitude,'accuracy':accuracy,'altitude':altitude,'altitudeAccuracy':altitudeAccuracy,'heading':heading,'speed':speed,'timestamp':locTimestamp,'time':locTime,'text':textNote,'geoCode':geoCode})
   data=data.encode('utf-8')
-  request = urllib.request.Request('http://test.wupo.info/loc/loc-in.php',data)
+  request = urllib.request.Request(locBaseUrl+'loc/loc-in.php',data)
   try:
     response = urllib.request.urlopen(request)
   except (urllib.error.HTTPError, socket.error,urllib.error.URLError) as e:
@@ -101,7 +102,7 @@ def checkAc(c=0):
 
 def doLogin():
   checkAc(0)
-  url="http://test.wupo.info/login/login_go.php"
+  url=locBaseUrl+"login/login_go.php"
   data=urllib.parse.urlencode({'UserName':ac,'Password':ps,'KeepInfo':'unchecked'})
   data=data.encode('utf-8')
   cj=http.cookiejar.CookieJar()
@@ -225,7 +226,7 @@ def saveGeoInfo(massage):
     geoData['timestamp']=str(geoData['time'])
   return writeLocation(geoData)  
 
-droid.webViewShow ('file:///storage/sdcard0/com.hipipal.qpyplus/projects3/loc_cn/index.html')
+droid.webViewShow ('file:///storage/sdcard0/com.hipipal.qpyplus/projects3/qpython3-cn/index.html')
 while True:
   event = droid.eventWait().result
   if event ['name' ] == 'kill' :
