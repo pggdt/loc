@@ -6,11 +6,12 @@ geoData={ 'latitude':'0','longitude':'0','accuracy':'0','altitude':'0','heading'
 r1={}
 ac=''
 ps=''
+locBaseDir="/storage/sdcard0/com.hipipal.qpyplus/projects3/qpython3-cn/"
 locBaseUrl='http://test.wupo.info/'
 
 def upload():
   del_ID=[]
-  conn = sqlite3.connect('file:///storage/sdcard0/com.hipipal.qpyplus/projects3/qpython3-cn/test.db')
+  conn = sqlite3.connect(locBaseDir+'test.db')
   c = conn.cursor()
   c.execute ("""select * from LocalLoc""")
   while 1:
@@ -130,7 +131,7 @@ def writeLocation(geoData):
 def saveToLocal():
   global geoData
   droid.makeToast("Try to save data to local")
-  conn = sqlite3.connect('/storage/sdcard0/home/test.db')
+  conn = sqlite3.connect(locBaseDir+'test.db')
   c = conn.cursor()
   c.execute("""create table if not exists LocalLoc (ID integer primary key not NULL,latitude double,longitude double,accuracy integer,altitude double,heading double,speed double,locTimestamp integer(13),locTime CHAR(20),textMsg TEXT,geoCode TEXT)""")
   s="""insert into LocalLoc (ID,latitude,longitude,accuracy,altitude,heading,speed,locTimestamp,locTime,textMsg,geoCode) VALUES (NULL,"""+geoData['latitude']+','+geoData['longitude']+','+geoData['accuracy']+','+geoData['altitude']+','+geoData['heading']+','+geoData['speed']+',\''+geoData['timestamp']+'\',\''+geoData['readTime']+'\',\''+geoData['text']+'\',\''+geoData['geoCode']+'\')'
@@ -226,7 +227,7 @@ def saveGeoInfo(massage):
     geoData['timestamp']=str(geoData['time'])
   return writeLocation(geoData)  
 
-droid.webViewShow ('file:///storage/sdcard0/com.hipipal.qpyplus/projects3/qpython3-cn/index.html')
+droid.webViewShow ('file:/'+locBaseDir+'index.html')
 while True:
   event = droid.eventWait().result
   if event ['name' ] == 'kill' :
