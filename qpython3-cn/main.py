@@ -1,6 +1,6 @@
 ﻿#qpy:gui
 from android import Android
-import sys,time,socket,urllib,http.cookiejar,sqlite3
+import sys,time,socket,urllib,http.cookiejar,sqlite3,json
 droid = Android()
 geoData={ 'latitude':'0','longitude':'0','accuracy':'0','altitude':'0','heading':'0','speed':'0','timestamp':'0','readTime':'0','text':'','geoCode':''}
 r1={}
@@ -11,7 +11,7 @@ locBaseUrl='http://test.wupo.info/'
 
 def upload():
   del_ID=[]
-  conn = sqlite3.connect(locBaseDir+'test.db')
+  conn = sqlite3.connect(locBaseDir+'/data/loc.db')
   c = conn.cursor()
   c.execute ("""select * from LocalLoc""")
   while 1:
@@ -131,7 +131,7 @@ def writeLocation(geoData):
 def saveToLocal():
   global geoData
   droid.makeToast("Try to save data to local")
-  conn = sqlite3.connect(locBaseDir+'test.db')
+  conn = sqlite3.connect(locBaseDir+'data/loc.db')
   c = conn.cursor()
   c.execute("""create table if not exists LocalLoc (ID integer primary key not NULL,latitude double,longitude double,accuracy integer,altitude double,heading double,speed double,locTimestamp integer(13),locTime CHAR(20),textMsg TEXT,geoCode TEXT)""")
   s="""insert into LocalLoc (ID,latitude,longitude,accuracy,altitude,heading,speed,locTimestamp,locTime,textMsg,geoCode) VALUES (NULL,"""+geoData['latitude']+','+geoData['longitude']+','+geoData['accuracy']+','+geoData['altitude']+','+geoData['heading']+','+geoData['speed']+',\''+geoData['timestamp']+'\',\''+geoData['readTime']+'\',\''+geoData['text']+'\',\''+geoData['geoCode']+'\')'
@@ -154,34 +154,36 @@ def getgeocode(code):
     else:
       r = response.read().decode('utf-8')
       r1=eval(r)
+      data=urllib.parse.urlencode({'lat':r1['Lat'],'lng':r1['Lng']})
+      data=data.encode('utf-8')
+      req=urllib.request.Request(locBaseUrl+"loc/geo.php",data)
     try:
-      result=droid.geocode( r1['Lat'], r1['Lng'], 1).result
-    except java.io.IOException:
-      print('geo code network failed：java.io.IOException')
-    if result==None:
-      s=""
+      response=urllib.request.urlopen(req)
+    except (urllib.error.HTTPError, socket.error,urllib.error.URLError):
+      print('geo code network failed：to'+locBaseUrl)
     else:
-      result=result[0]
-      if ('thoroughfare' in result.keys()) and ('feature_name' in result.keys()) and (result['thoroughfare']==result['feature_name']):
-        del result['feature_name']
-      for k in result:
-        s=s+","+str(result[k])
-      s=s[1:]
+      result=response.read().decode('utf-8')
+      r=json.loads(result)
+      re=r['results'][0]['address_components']
+      for i in re:
+       s=s+i["long_name"]+","
+      s=s[0:-1]
     return s
   elif code=="ggCode":
+    data=urllib.parse.urlencode({'lat':geoData['latitude'],'lng':geoData['longitude']})
+    data=data.encode('utf-8')
+    req=urllib.request.Request(locBaseUrl+"loc/geo.php",data)
     try:
-      result=droid.geocode( geoData['latitude'], geoData['longitude'], 1).result
-    except java.io.IOException:
-      print('geo code network failed：java.io.IOException')
-    if result==None:
-      s=""
+      response=urllib.request.urlopen(req)
+    except (urllib.error.HTTPError, socket.error,urllib.error.URLError):
+      print('geo code network failed：to'+locBaseUrl)
     else:
-      result=result[0]
-      if ('thoroughfare' in result.keys()) and ('feature_name' in result.keys()) and (result['thoroughfare']==result['feature_name']):
-        del result['feature_name']
-      for k in result:
-        s=s+","+str(result[k])
-      s=s[1:]
+      result=response.read().decode('utf-8')
+      r=json.loads(result)
+      re=r['results'][0]['address_components']
+      for i in re:
+       s=s+i["long_name"]+","
+      s=s[0:-1]
     return s
   elif code=="zdCode":
     data3=urllib.parse.urlencode({'lat':geoData['latitude'],'lng':geoData['longitude']})
@@ -227,7 +229,7 @@ def saveGeoInfo(massage):
     geoData['timestamp']=str(geoData['time'])
   return writeLocation(geoData)  
 
-droid.webViewShow ('file:/'+locBaseDir+'index.html')
+droid.webViewShow ('file://'+locBaseDir+'index.html')
 while True:
   event = droid.eventWait().result
   if event ['name' ] == 'kill' :
