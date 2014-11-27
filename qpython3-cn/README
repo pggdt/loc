@@ -3,3 +3,6 @@ CN version:
 2, Add zdCode for getting geocode(It has offset, and lack of accurency).
 3, Add bootstrap to index.html and looks not so ugly now.
 4, Add selection for user in china or out of china. I tried to save the selection by html5's local storage feature but it didn't work. Then I tried cookie with javascript, it faild again duo to localhost issue.
+
+tips:
+With Qpython3 version 0.9.2, there might be encoding problem. Save main.py in UTF-8 without BOM will fix it.
