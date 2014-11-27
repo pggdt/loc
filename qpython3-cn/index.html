@@ -104,13 +104,14 @@
 	    if (document.getElementById("inCN").checked){
 	    document.getElementById("codeSrc").innerHTML="ggCodeCN";
 	    } else {
-	    document.getElementById("codeSrc").innerHTML="ggCode";
+	    document.getElementById("codeSrc").innerHTML="ggCodeOrg";
 	    }
+	  break;
+	  case "ggCodeOrg":
+	  document.getElementById("codeSrc").innerHTML="ggCode";
 	  break;
 	  case "ggCodeCN":
 	  case "ggCode":
-	  document.getElementById("codeSrc").innerHTML="noCode";
-	  break;
 	  case "zdCode":
 	  document.getElementById("codeSrc").innerHTML="noCode";
 	  break;

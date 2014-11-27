@@ -9,7 +9,7 @@ LANG='zh-TW'
 ac=''
 ps=''
 locBaseDir="/storage/sdcard0/com.hipipal.qpyplus/projects3/qpython3-cn/"
-locBaseUrl='http://test.wupo.info/'
+locBaseUrl='http://test.test.info/'
 
 def upload():
   del_ID=[]
@@ -189,6 +189,21 @@ def getgeocode(code):
     else:
       results_zd = response1.read().decode('utf-8')
       return results_zd
+  elif code=="ggCodeOrg":
+    try:
+      result=droid.geocode( geoData['latitude'], geoData['longitude'], 1).result
+    except java.io.IOException:
+      print('geo code network failed：java.io.IOException')
+    if result==None:
+      s=""
+    else:
+      result=result[0]
+      if ('thoroughfare' in result.keys()) and ('feature_name' in result.keys()) and (result['thoroughfare']==result['feature_name']):
+        del result['feature_name']
+      for k in result:
+        s=s+","+str(result[k])
+      s=s[1:]
+    return s
 
 def getGeoInfo(code):
   while True:
