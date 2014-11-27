@@ -9,7 +9,7 @@ LANG='zh-TW'
 ac=''
 ps=''
 locBaseDir="/storage/sdcard0/com.hipipal.qpyplus/projects3/qpython3-cn/"
-locBaseUrl='http://test.test.com/'
+locBaseUrl='http://test.wupo.info/'
 
 def upload():
   del_ID=[]
@@ -149,17 +149,9 @@ def getgeocode(code):
   s=''
   socket.setdefaulttimeout(20)
   if code=="ggCodeCN":
-    data2 = urllib.parse.urlencode({'lat':geoData['latitude'],'lng':geoData['longitude']})
-    try:
-      response = urllib.request.urlopen('http://api.zdoz.net/transgps.aspx?'+data2)
-    except (urllib.error.HTTPError, socket.error) as e:
-      print('Connection error occurred when translating gps data.'+e.read())
-    else:
-      r = response.read().decode('utf-8')
-      r1=eval(r)
-      data=urllib.parse.urlencode({'lat':r1['Lat'],'lng':r1['Lng'] ,'lang':LANG })
-      data=data.encode('utf-8')
-      req=urllib.request.Request(locBaseUrl+"loc/geo.php",data)
+    data=urllib.parse.urlencode({'lat':geoData['latitude'],'lng':geoData['longitude'],'lang':LANG,'cvt':'1' })
+    data=data.encode('utf-8')
+    req=urllib.request.Request(locBaseUrl+"loc/geoi.php",data)
     try:
       response=urllib.request.urlopen(req)
     except (urllib.error.HTTPError, socket.error,urllib.error.URLError) as e:
@@ -167,15 +159,15 @@ def getgeocode(code):
     else:
       result=response.read().decode('utf-8')
       r=json.loads(result)
-      re=r['results'][0]['address_components']
+      re=r['results'][0]['address_components']      
       for i in re:
        s=s+i["long_name"]+","
       s=s[0:-1]
     return s
   elif code=="ggCode":
-    data=urllib.parse.urlencode({'lat':geoData['latitude'],'lng':geoData['longitude'] ,'lang':LANG })
+    data=urllib.parse.urlencode({'lat':geoData['latitude'],'lng':geoData['longitude'] ,'lang':LANG,'cvt':'0'})
     data=data.encode('utf-8')
-    req=urllib.request.Request(locBaseUrl+"loc/geo.php",data)
+    req=urllib.request.Request(locBaseUrl+"loc/geoi.php",data)
     try:
       response=urllib.request.urlopen(req)
     except (urllib.error.HTTPError, socket.error,urllib.error.URLError):
@@ -221,7 +213,7 @@ def getGeoInfo(code):
       print ("No location data!")
       break
   droid.eventPost('stdout',str(geoData))
-  print(str(geoData))
+#  print(str(geoData))
 
 def saveGeoInfo(massage):
   global geoData
