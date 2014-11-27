@@ -9,7 +9,7 @@ LANG='zh-TW'
 ac=''
 ps=''
 locBaseDir="/storage/sdcard0/com.hipipal.qpyplus/projects3/qpython3-cn/"
-locBaseUrl='http://test.test.com/'
+locBaseUrl='http://test.wupo.info/'
 
 def upload():
   del_ID=[]
