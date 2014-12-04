@@ -15,6 +15,10 @@ var heading = document.getElementById("heading").innerHTML;
 var speed = document.getElementById("speed").innerHTML; 
 var timestamp = document.getElementById("timestamp").innerHTML;
 var locTime = document.getElementById("time").innerHTML;
+if(timestamp===""||locTime===""){
+  timestamp=new Date().getTime();
+  locTime=parseTimestamp(timestamp);
+}
 var geoCode = document.getElementById("geocode").innerHTML;  
 var locText = document.getElementById("text").value; 
 var url="loc-in.php";

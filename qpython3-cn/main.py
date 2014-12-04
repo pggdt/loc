@@ -1,6 +1,6 @@
 #qpy:gui
 from android import Android
-import sys,time,socket,urllib,http.cookiejar,sqlite3,json
+import sys,time,socket,urllib,http.cookiejar,sqlite3,json,hashlib
 droid = Android()
 geoData={ 'latitude':'0','longitude':'0','accuracy':'0','altitude':'0','heading':'0','speed':'0','timestamp':'0','readTime':'0','text':'','geoCode':''}
 r1={}
@@ -8,6 +8,7 @@ LANG='zh-TW'
 #zh-TW en
 ac=''
 ps=''
+SALT='yourSalt'
 locBaseDir="/storage/sdcard0/com.hipipal.qpyplus/projects3/qpython3-cn/"
 locBaseUrl='http://test.test.info/'
 
@@ -91,7 +92,9 @@ def checkAc(c=0):
       ac=str(line.result)
       droid.prefPutValue("ac",ac,"z")
       line1 = droid.dialogGetPassword('Account Info','Please input your password:')
-      ps=str(line1.result)
+      ps=str(line1.result)+SALT
+      ps=ps.encode('utf-8')
+      ps=hashlib.sha256(ps).hexdigest()
       droid.prefPutValue("ps",ps,"z")
       droid.makeToast('Account '+ac+' saved')
   elif c==1:
@@ -125,7 +128,7 @@ def doLogin():
     return rt
 
 def writeLocation(geoData):
-  if (doLogin().startswith('登')):
+  if (doLogin().startswith('Welcome')):
     return doPost("""$_SESSION["user_id"]""",geoData['latitude'],geoData['longitude'],geoData['accuracy'],geoData['altitude'],'0',geoData['heading'],geoData['speed'],geoData['timestamp'],geoData['readTime'],geoData['text'],geoData['geoCode'])
   else:
     return saveToLocal()
