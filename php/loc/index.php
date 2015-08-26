@@ -1,63 +1,111 @@
 ﻿<?php
- require_once('../login/StartSession.php');
- if (!isset($_SESSION['user_id'])) {
- 	header("refresh:1;url=../login/login.php");
-  	exit; 
- }
+require_once ('../login/StartSession.php');
+if (! isset($_SESSION['user_id'])) {
+    header("refresh:1;url=../login/login.php");
+    exit();
+}
 ?>
 <!DOCTYPE HTML>
 <html>
 <head>
 <meta charset="UTF-8" />
-
-<title>html5-Location</title>
+<title>html5地理位置</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="white">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-touch-fullscreen" content="yes">
 <link rel="stylesheet" type="text/css" href="css/style.css">
-<script stype="text/javascript" src="js/loc.js"></script>
+<script type="text/javascript" src="js/loc.js"></script>
 <script
-src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDfYwZAVajNuT6_mcTYwY6_Jxdsg3q-3tI&sensor=false">
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcmbmdxn8MQ2x8ZdnWvsvSUhK_82-Qyvw&sensor=ture">
+</script>
+<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+	function submitForm() {
+			console.log("submit event");
+			var fd = new FormData(document.getElementById("fileForm"));
+			//fd.append("label", "WEBUPLOAD");
+			$.ajax({
+			  url: "loc-in-media.php",
+			  type: "POST",
+			  data: fd,
+			  enctype: 'multipart/form-data',
+			  processData: false,  // tell jQuery not to process the data
+			  contentType: false   // tell jQuery not to set contentType
+			}).done(function( data ) {
+				console.log("PHP Output:");
+				console.log( data );
+				document.getElementById("location").innerHTML=data;
+			});
+			return false;
+    }
 </script>
 </head>
 
-<body style="padding:0px 10px;width:320px;height:500px;">
+<body style="padding: 0px 10px; width: 320px; height: 500px;">
 
 	<dl>
-	<dt>Latitude</dt><dd id="latitude"></dd>
-	<dt>Longitude</dt><dd id="longitude"></dd>
-	<dt>Accuracy</dt><dd id="accuracy"></dd>
-	<dt>Altitude</dt><dd id="altitude"></dd>
-	<dt>Altitude Accuracy</dt><dd id="altitudeAccuracy"></dd>
-	<dt>Heading</dt><dd id="heading"></dd>
-	<dt>Speed</dt><dd id="speed"></dd>
-	<dt>Timestamp</dt><dd id="timestamp"></dd>
-	<dt>Time</dt><dd id="time"></dd>
-	<dt id="codeSrc" onclick="changeCodeSrc()">noCode</dt><dd id="geocode"></dd>
+		<dt>Latitude</dt>
+		<dd id="latitude"></dd>
+		<dt>Longitude</dt>
+		<dd id="longitude"></dd>
+		<dt>Accuracy</dt>
+		<dd id="accuracy"></dd>
+		<dt>Altitude</dt>
+		<dd id="altitude"></dd>
+		<dt>Altitude Accuracy</dt>
+		<dd id="altitudeAccuracy"></dd>
+		<dt>Heading</dt>
+		<dd id="heading"></dd>
+		<dt>Speed</dt>
+		<dd id="speed"></dd>
+		<dt>Timestamp</dt>
+		<dd id="timestamp"></dd>
+		<dt>Time</dt>
+		<dd id="time"></dd>
+		<dt id="codeSrc" onclick="changeCodeSrc()">noCode</dt>
+		<dd id="geocode"></dd>
 	</dl>
-<div id="load" style="visibility:hidden"></div>	
-<p id="location"></p>
-<input type="button" value="Save" onclick="send()">
-&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="button" value="Get" onclick="getLocation(showPosition)"><br />
-Text:<br /><textarea rows="10" cols="30" id="text" name="text"></textarea><br />
-	
-<a href="loc-outi.php" target="_blank">Records</a>&nbsp;&nbsp;&nbsp;&nbsp;
-<a id="mapLink" href="#" target="_blank"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-<a id="sateLink" href="#" target="_blank"></a>
+	<div id="load" style="visibility: hidden"></div>
+	<p id="location"></p>
+	<input type="button" value="写入数据库" onclick="send()">
+	&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type="button" value="获取当前位置" onclick="getLocation(showPosition)">
+	<br /> Text:
+	<br />
+	<textarea rows="10" cols="30" id="text" name="text"></textarea>
+	<br />
 
-<script type="text/javascript">
+	<form method="post" id="fileForm" name="fileForm"
+		enctype="multipart/form-data" onsubmit="return submitForm();">
+		<label>Select a file:</label><input id="fileSelect" name="fileSelect"
+			type="file" required /><br /> <input type="submit" id="fileButton"
+			name="fileButton" value="Upload" />
+	</form>
+
+	<a href="loc-outi.php" target="_blank">Records</a>&nbsp;&nbsp;&nbsp;&nbsp;
+	<a id="mapLink" href="#" target="_blank"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+	<a id="sateLink" href="#" target="_blank"></a>
+
+	<script type="text/javascript">
 	var geocoder;
 	var x=document.getElementById("location");
 	var parseTimestamp = function(timestamp) {
 	var d = new Date(timestamp);
+	var time =d.toTimeString();
+	time=time.slice(0,8);
 	var day = d.getDate();
 	var month = d.getMonth() + 1;
 	var year = d.getFullYear();
-	return year + "-" + month +"-"+ day +" "+ d.toLocaleTimeString();
+	return year + "-" + month +"-"+ day +" "+ time;
 	};
 	function getLocation(func1)
 	  {
 	  if (navigator.geolocation)
 		{
-		navigator.geolocation.getCurrentPosition(func1,showError);
+		navigator.geolocation.getCurrentPosition(func1,showError,{enableHighAccuracy:true});
 		document.getElementById('load').style.visibility='visible';
 		}
 	  else{x.innerHTML="Geolocation is not supported by this browser.";}
@@ -130,5 +178,6 @@ Text:<br /><textarea rows="10" cols="30" id="text" name="text"></textarea><br />
 	}
 	
 </script>
-<?php include_once("../analyticstracking.php") ?></body>
+</body>
+<?php include_once("../analyticstracking.php") ?>
 </html>

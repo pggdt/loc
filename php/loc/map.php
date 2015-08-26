@@ -2,14 +2,15 @@
 <head>
 <title>Location-Map</title>
 <script
-src="<?php 
-if(isset($_GET['s'])&&isset($_GET['h'])&&$_GET["s"]!=0){
-    echo 'http://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyDfYwZAVajNuT6_mcTYwY6_Jxdsg3q-3tI&sensor=false';
+	src="<?php
+if (isset($_GET['s']) && isset($_GET['h']) && $_GET["s"] != 0) {
+    echo 'https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyAcmbmdxn8MQ2x8ZdnWvsvSUhK_82-Qyvw&sensor=true';
 } else {
-    echo 'http://maps.googleapis.com/maps/api/js?key=AIzaSyDfYwZAVajNuT6_mcTYwY6_Jxdsg3q-3tI&sensor=false';
-}?>">
+    echo 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAcmbmdxn8MQ2x8ZdnWvsvSUhK_82-Qyvw&sensor=false';
+}
+?>">
 </script>
- 
+
 <script>
 var myCenter=new google.maps.LatLng(<?php echo $_GET["a"].",".$_GET["n"]; ?>);
 function initialize()
@@ -36,10 +37,10 @@ function initialize()
   fillOpacity:0.2
   });
 <?php
-if(isset($_GET['s'])&&isset($_GET['h'])&&$_GET["s"]!=0){
-    $s=$_GET['s']*10;
-    $h=$_GET['h']+180;
-    echo 'var startLL=new google.maps.geometry.spherical.computeOffset(myCenter, '.$s.', '.$h.');';
+if (isset($_GET['s']) && isset($_GET['h']) && $_GET["s"] != 0) {
+    $s = $_GET['s'] * 10;
+    $h = $_GET['h'] + 180;
+    echo 'var startLL=new google.maps.geometry.spherical.computeOffset(myCenter, ' . $s . ', ' . $h . ');';
     echo 'var myTrip=[startLL,myCenter];';
     echo 'var flightPath=new google.maps.Polyline({
   path:myTrip,
@@ -61,8 +62,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
 <body>
 
-<div id="googleMap" style="width:400px;height:300px;"></div>
-<br>
+	<div id="googleMap" style="width: 400px; height: 300px;"></div>
+	<br>
 
 <?php include_once("../analyticstracking.php") ?></body>
 </body>

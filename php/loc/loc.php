@@ -1,9 +1,9 @@
 ﻿<?php
- require_once('../login/StartSession.php');
- if (!isset($_SESSION['user_id'])) {
- 	header("refresh:1;url=../login/login.php");
-  	exit; 
- }
+require_once ('../login/StartSession.php');
+if (! isset($_SESSION['user_id'])) {
+    header("refresh:1;url=../login/login.php");
+    exit();
+}
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -12,40 +12,52 @@
 
 <title>html5地理位置</title>
 <link rel="stylesheet" type="text/css" href="../css/style.css">
-<script stype="text/javascript" src="../js/loc.js"></script> 
+<script type="text/javascript" src="../js/loc.js"></script>
 </head>
 
-<body style="padding:0px 10px;width:320px;height:500px;">
+<body style="padding: 0px 10px; width: 320px; height: 500px;">
 
 	<dl>
-	<dt>Latitude</dt><dd id="latitude"></dd>
-	<dt>Longitude</dt><dd id="longitude"></dd>
-	<dt>Accuracy</dt><dd id="accuracy"></dd>
-	<dt>Altitude</dt><dd id="altitude"></dd>
-	<dt>Altitude Accuracy</dt><dd id="altitudeAccuracy"></dd>
-	<dt>Heading</dt><dd id="heading"></dd>
-	<dt>Speed</dt><dd id="speed"></dd>
-	<dt>Timestamp</dt><dd id="timestamp"></dd>
-	<dt>Time</dt><dd id="time"></dd>
+		<dt>Latitude</dt>
+		<dd id="latitude"></dd>
+		<dt>Longitude</dt>
+		<dd id="longitude"></dd>
+		<dt>Accuracy</dt>
+		<dd id="accuracy"></dd>
+		<dt>Altitude</dt>
+		<dd id="altitude"></dd>
+		<dt>Altitude Accuracy</dt>
+		<dd id="altitudeAccuracy"></dd>
+		<dt>Heading</dt>
+		<dd id="heading"></dd>
+		<dt>Speed</dt>
+		<dd id="speed"></dd>
+		<dt>Timestamp</dt>
+		<dd id="timestamp"></dd>
+		<dt>Time</dt>
+		<dd id="time"></dd>
 	</dl>
-<div id="load" style="visibility:hidden"></div>	
-<p id="location"></p>
-<input type="button" value="写入数据库" onclick="send()">
-&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="button" value="获取当前位置" onclick="getLocation(showPosition)"><br />
-Text:<br /><textarea rows="10" cols="30" id="text" name="text"></textarea><br />
+	<div id="load" style="visibility: hidden"></div>
+	<p id="location"></p>
+	<input type="button" value="写入数据库" onclick="send()">
+	&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type="button" value="获取当前位置" onclick="getLocation(showPosition)">
+	<br /> Text:
+	<br />
+	<textarea rows="10" cols="30" id="text" name="text"></textarea>
+	<br />
 
-	<form style="display:none;" action="">
-	Image:<input type="file" name="image" size="10" value="" /><br />
-	Audio:<input type="file" id="audio" name="audio" size="10" value="" /><br />
-	<input type="submit" value="Submit" />
+	<form style="display: none;" action="">
+		Image:<input type="file" name="image" size="10" value="" /><br />
+		Audio:<input type="file" id="audio" name="audio" size="10" value="" /><br />
+		<input type="submit" value="Submit" />
 	</form>
-	
-<a href="loc-outi.php" target="_blank">Records</a>&nbsp;&nbsp;&nbsp;&nbsp;
-<a id="mapLink" href="#" target="_blank"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-<a id="sateLink" href="#" target="_blank"></a>
 
-<script type="text/javascript">
+	<a href="loc-outi.php" target="_blank">Records</a>&nbsp;&nbsp;&nbsp;&nbsp;
+	<a id="mapLink" href="#" target="_blank"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+	<a id="sateLink" href="#" target="_blank"></a>
+
+	<script type="text/javascript">
 var x=document.getElementById("location");
 	var parseTimestamp = function(timestamp) {
 	var d = new Date(timestamp);
